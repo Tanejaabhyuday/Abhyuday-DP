@@ -108,6 +108,227 @@ body {
 }
 
 /* ─────────────────────────────────────────
+   CUSTOM CURSOR
+───────────────────────────────────────── */
+body { cursor: none; }
+
+#cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s ease, width 0.2s ease, height 0.2s ease,
+              background 0.2s ease, opacity 0.3s ease;
+  mix-blend-mode: normal;
+}
+
+#cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 122, 255, 0.55);
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.18s cubic-bezier(0.4,0,0.2,1),
+              width 0.25s ease, height 0.25s ease,
+              border-color 0.25s ease, opacity 0.3s ease;
+  backdrop-filter: none;
+}
+
+/* Hover states — grown ring + filled dot */
+body.cursor-hover #cursor-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--accent-pink);
+}
+
+body.cursor-hover #cursor-ring {
+  width: 52px;
+  height: 52px;
+  border-color: rgba(255, 45, 85, 0.4);
+}
+
+/* Click pulse */
+body.cursor-click #cursor-dot {
+  transform: translate(-50%, -50%) scale(0.6);
+}
+
+body.cursor-click #cursor-ring {
+  width: 22px;
+  height: 22px;
+  border-color: var(--accent-blue);
+  opacity: 0.6;
+}
+
+/* Hide on mobile */
+@media (pointer: coarse) {
+  #cursor-dot, #cursor-ring { display: none; }
+  body { cursor: auto; }
+}
+
+/* ─────────────────────────────────────────
+   CARD SPOTLIGHT GLOW
+───────────────────────────────────────── */
+.project-card,
+.achievement-card,
+.stat-card,
+.tech-item {
+  --spotlight-x: 50%;
+  --spotlight-y: 50%;
+  overflow: hidden;
+}
+
+/* Radial spotlight overlay — revealed by JS setting --spotlight-x/y */
+.project-card::before,
+.achievement-card::before,
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    320px circle at var(--spotlight-x) var(--spotlight-y),
+    rgba(0, 122, 255, 0.10) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.project-card:hover::before,
+.achievement-card:hover::before,
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+/* Make card children sit above spotlight */
+.project-card > *,
+.achievement-card > *,
+.stat-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────
+   ENHANCED INTERACTIVE HOVERS
+───────────────────────────────────────── */
+
+/* Nav links — underline slide */
+.nav-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  border-radius: 99px;
+  background: var(--accent-blue);
+  transition: width 0.25s ease, left 0.25s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 60%;
+  left: 20%;
+}
+
+/* Tag hover */
+.tag {
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  cursor: default;
+}
+
+.tag:hover {
+  background: var(--accent-blue);
+  color: #fff;
+  transform: translateY(-2px) scale(1.06);
+}
+
+/* Tech item — colour pop */
+.tech-item {
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.25s ease,
+              background 0.25s ease;
+}
+
+.tech-item:hover {
+  transform: translateY(-6px) scale(1.08);
+  box-shadow: 0 12px 32px rgba(0, 122, 255, 0.22);
+}
+
+/* Buttons — shimmer sweep */
+.btn {
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.18) 50%,
+    transparent 100%
+  );
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+
+.btn:hover::after {
+  left: 160%;
+}
+
+/* Need position relative on btn for pseudo */
+.btn {
+  position: relative;
+}
+
+/* Social links — spin icon slightly */
+.social-link svg {
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.social-link:hover svg {
+  transform: rotate(-10deg) scale(1.15);
+}
+
+/* Skill bars — glow on fill */
+.skill-fill {
+  box-shadow: none;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.skill-bar-item:hover .skill-fill {
+  box-shadow: 0 0 12px rgba(0, 122, 255, 0.5);
+}
+
+/* Avatar blob — interactive scale */
+.avatar-blob {
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;
+}
+
+.avatar-blob:hover {
+  transform: scale(1.06);
+  box-shadow: 0 20px 60px rgba(0, 122, 255, 0.2);
+}
+
+/* ─────────────────────────────────────────
    LOADER
 ───────────────────────────────────────── */
 #loader {
@@ -293,6 +514,29 @@ body {
   flex-direction: column;
   justify-content: center;
   padding-top: 120px;
+  overflow: hidden;
+}
+
+/* ── Particles Background ── */
+#particles-js {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#particles-js canvas {
+  display: block;
+  pointer-events: auto; /* allow hover bubble effect on canvas */
+}
+
+.hero-content,
+.scroll-indicator {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-content {
